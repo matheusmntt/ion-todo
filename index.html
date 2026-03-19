@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ion — Todo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+
+<body>
+
+  <div class="min-h-screen flex flex-col items-center py-14 px-4">
+
+    <!-- Header -->
+    <header id="app-header" class="w-full max-w-md mb-8">
+      <div class="flex items-end justify-between">
+        <div>
+          <p class="text-xs tracking-widest uppercase text-muted">Ion Framework</p>
+          <h1 class="serif mt-1 text-hero">
+            Today's<br><em>work.</em>
+          </h1>
+        </div>
+        <div class="text-right pb-1">
+          <p id="clock" class="text-lg text-muted tabular-nums"></p>
+          <p id="date-label" class="text-xs mt-0.5 text-muted"></p>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <div class="flex justify-between text-xs mb-1.5 text-muted">
+          <span>completion</span>
+          <span><span data-bind="progress"></span>%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main card -->
+    <main data-todo-app class="card w-full max-w-md">
+
+      <!-- Input row: data-model/data-show binds ONLY to draftStore -->
+      <div id="draft-form" class="input-row">
+        <input id="new-input" class="bare-input" placeholder="add a new task…" data-model="text" autocomplete="off">
+        <!-- data-show="typing" reveals priority select only when user has typed -->
+        <select class="p-select" data-show="typing" data-model="priority">
+          <option value="medium">med</option>
+          <option value="high">high</option>
+          <option value="low">low</option>
+        </select>
+        <button id="add-btn" class="add-btn" data-show="typing" aria-label="Add task">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+            <path d="M5.5 1v9M1 5.5h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          add
+        </button>
+      </div>
+
+      <!-- Stats: all data-bind to computed properties on todos store -->
+      <div id="stats-row" class="stats-row">
+        <span><span data-bind="totalCount"></span> total</span>
+        <span class="text-muted">·</span>
+        <span class="text-done"><span data-bind="doneCount"></span> done</span>
+        <span class="text-muted">·</span>
+        <span><span data-bind="pendingCount"></span> pending</span>
+        <span data-show="hasHighPriority" class="ml-auto flex items-center gap-1.5 text-accent">
+          <span class="dot dot-high"></span>
+          <span data-bind="highPriorityCount"></span> urgent
+        </span>
+      </div>
+
+      <!-- Filter bar: managed by TodoApp component -->
+      <div id="filter-bar" class="filter-bar">
+        <button class="pill on" data-filter="all">all</button>
+        <button class="pill" data-filter="pending">pending</button>
+        <button class="pill" data-filter="done">done</button>
+        <button class="pill" data-filter="high">urgent</button>
+        <button id="clear-btn" class="pill ml-auto text-accent" data-show="hasDone">
+          clear done
+        </button>
+      </div>
+
+      <!-- List: rendered by TodoList component -->
+      <ul data-todo-list class="todo-list"></ul>
+
+      <!-- Empty state: data-show bound to computed isEmpty -->
+      <div data-show="isEmpty" class="empty-state">
+        <p class="serif text-2xl italic text-muted">nothing here.</p>
+        <p class="text-xs mt-2 text-muted">add a task above to get started</p>
+      </div>
+
+    </main>
+
+    <footer class="mt-6 text-xs text-muted">
+      demo ·
+      <a href="https://github.com/matheusmntt/ion" class="text-ink underline">ion framework</a>
+    </footer>
+
+  </div>
+
+  <div id="toast"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
