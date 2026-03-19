@@ -1,0 +1,25 @@
+{
+  "name": "ion-todo-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ion framework todo demo",
+  "license": "MIT",
+  "author": {
+    "name": "Matheus Monteiro",
+    "email": "matheusmdev@outlook.com",
+    "url": "https://github.com/matheusmntt"
+  },
+  "scripts": {
+    "dev":   "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@matheusmntt/ion": "1.0.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^6.0.0"
+  }
+}
