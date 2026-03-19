@@ -4,6 +4,8 @@ A task management application built as a reference implementation for the [Ion f
 
 > This project exists to answer the question: *"How do I actually use Ion?"*
 
+![Ion Todo screenshot](./screenshot.png)
+
 ---
 
 ## Overview
