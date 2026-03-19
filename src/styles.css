@@ -1,0 +1,381 @@
+@import "tailwindcss";
+
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --ink: #1a1916;
+  --paper: #f5f2eb;
+  --muted: #9c9a93;
+  --accent: #d4622a;
+  --done: #5a7a5c;
+  --border: #dedad2;
+  --hover: #f0ece3;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "DM Mono", monospace;
+  min-height: 100vh;
+}
+
+/* ── Tailwind utilities backed by tokens ────────────────────────────────────── */
+.text-muted {
+  color: var(--muted);
+}
+.text-accent {
+  color: var(--accent);
+}
+.text-done {
+  color: var(--done);
+}
+.text-ink {
+  color: var(--ink);
+}
+
+.serif {
+  font-family: "Instrument Serif", serif;
+}
+
+.text-hero {
+  font-family: "Instrument Serif", serif;
+  font-size: 3.2rem;
+  line-height: 1.05;
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────────── */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 72px;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.22);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.enter {
+  animation: slide-in 0.2s ease both;
+}
+.remove {
+  animation: slide-out 0.25s ease forwards;
+  overflow: hidden;
+}
+.shake {
+  animation: shake 0.28s ease;
+}
+.pop {
+  animation: pop 0.22s ease;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────────── */
+.card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+}
+
+/* ── Input row ──────────────────────────────────────────────────────────────── */
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.input-row:focus-within {
+  background: #fdfcf9;
+}
+
+.bare-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: "DM Mono", monospace;
+  font-size: 0.875rem;
+  color: var(--ink);
+  width: 100%;
+  caret-color: var(--accent);
+  padding: 4px 0;
+}
+.bare-input::placeholder {
+  color: var(--muted);
+}
+
+.p-select {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-family: "DM Mono", monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  padding: 2px 6px;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 3px;
+  border: none;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "DM Mono", monospace;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.1s;
+  letter-spacing: 0.04em;
+}
+.add-btn:hover {
+  background: #2e2d29;
+}
+.add-btn:active {
+  transform: scale(0.96);
+}
+
+/* ── Stats row ──────────────────────────────────────────────────────────────── */
+.stats-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Filter bar ─────────────────────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pill {
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.12s;
+  color: var(--muted);
+  font-family: "DM Mono", monospace;
+  background: none;
+}
+.pill:hover {
+  color: var(--ink);
+  border-color: var(--border);
+}
+.pill.on {
+  color: var(--paper);
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+/* ── Todo list ──────────────────────────────────────────────────────────────── */
+.todo-list {
+  min-height: 100px;
+  max-height: 400px;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+.todo-item:hover {
+  background: var(--hover);
+}
+.todo-item:last-child {
+  border-bottom: none;
+}
+
+/* ── Checkbox ───────────────────────────────────────────────────────────────── */
+.check {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--muted);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: none;
+}
+.check.on {
+  background: var(--done);
+  border-color: var(--done);
+}
+.check svg {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.check.on svg {
+  opacity: 1;
+}
+
+/* ── Priority dot ───────────────────────────────────────────────────────────── */
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+.dot-high {
+  background: #d4622a;
+}
+.dot-medium {
+  background: #c4a030;
+}
+.dot-low {
+  background: #5a7a5c;
+}
+
+/* ── Remove button ──────────────────────────────────────────────────────────── */
+.remove-btn {
+  opacity: 0;
+  transition: opacity 0.12s;
+  color: var(--muted);
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.todo-item:hover .remove-btn {
+  opacity: 1;
+}
+
+/* ── Empty state ────────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  animation: fade-in 0.3s ease;
+}
+
+/* ── Progress bar ───────────────────────────────────────────────────────────── */
+.progress-track {
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--done);
+  border-radius: 1px;
+  transition: width 0.5s ease;
+}
+
+/* ── Toast ──────────────────────────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "DM Mono", monospace;
+  font-size: 0.7rem;
+  padding: 7px 16px;
+  border-radius: 2px;
+  opacity: 0;
+  transition:
+    opacity 0.18s,
+    transform 0.18s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 999;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
