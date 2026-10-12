@@ -2,7 +2,8 @@
  * TooltipPlugin
  *
  * Registers a custom `data-tooltip` binding directive.
- * Any element with data-tooltip="Some text" gets a native title + aria-label.
+ * Any element with data-tooltip="Some text" inside a root bound with App.bind()
+ * gets a native title + aria-label (used on the filter pills in index.html).
  *
  * Ion feature used: App.use(), PluginContext.registerBinding()
  *

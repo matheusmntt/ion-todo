@@ -1,6 +1,6 @@
 # Ion Todo — Demo Application
 
-A task management application built as a reference implementation for the [Ion framework](https://github.com/matheusmntt/ion). Every feature of Ion is exercised here in a realistic, working context — not as isolated snippets, but wired together as a real application.
+A task management application built as a reference implementation for the [Ion framework](https://github.com/matheusmntt/ion). Ion's core features are exercised here in a realistic, working context — not as isolated snippets, but wired together as a real application.
 
 > This project exists to answer the question: *"How do I actually use Ion?"*
 
@@ -63,16 +63,16 @@ ion-todo/
 
 ## Ion Features in Use
 
-Every Ion primitive is used here. The table below maps each feature to where it appears in the codebase.
+The table below maps each Ion feature used here to where it appears in the codebase. (Not used: `data-for`, `data-attr`, `data-class` and the inspector.)
 
 | Feature | File | Description |
 |---|---|---|
 | `App.store()` with `computed` | `stores/todos.js` | Domain state with 9 computed properties |
 | `App.store()` isolated | `stores/draft.js` | UI-only state scoped to the input form |
-| `store.subscribe()` | `components/TodoList.js`, `effects/index.js` | Re-render list and sync progress bar |
+| `store.subscribe()` | `components/TodoList.js` | Re-render the list |
 | `store.watch()` | `stores/draft.js`, `main.js` | Reactive flags and completion toast |
 | `store.onChange()` | `main.js` | Dev-mode change logging |
-| `App.effect()` | `effects/index.js` | localStorage persistence, page title, clock |
+| `App.effect()` | `effects/index.js` | localStorage persistence (restored on load in `stores/todos.js`), progress bar, page title, clock |
 | `App.batch()` | `components/TodoApp.js` | Atomic form submission across two stores |
 | `App.component()` | `components/TodoApp.js`, `components/TodoList.js` | Component registration and lifecycle |
 | `App.bind()` | `main.js` | Scoped store-to-DOM connections |
@@ -81,10 +81,15 @@ Every Ion primitive is used here. The table below maps each feature to where it 
 | `data-bind` | `index.html` | Text bindings for all stat counters |
 | `data-show` | `index.html` | Conditional visibility for stats, empty state, clear button |
 | `data-model` | `index.html` | Two-way binding on input and priority select |
+| `data-tooltip` (plugin) | `index.html`, `plugins/tooltip.js` | Titles and labels on the filter pills |
 
 ---
 
 ## Architecture Decisions
+
+### Persistence
+
+The `persist` effect writes `items` to `localStorage` whenever they change, and `stores/todos.js` reads them back when the store is created. Saved data is validated item by item; anything malformed is dropped instead of trusted.
 
 ### Two stores, two scopes
 
@@ -132,27 +137,21 @@ filterBar.addEventListener('click', onFilter) // → todosStore.state.filter = .
 const unsubscribe = todosStore.subscribe(render)
 ```
 
-### `subscribe()` for computed-dependent side effects
+### Effects can read computed values
 
-`App.effect()` tracks dependencies by intercepting property access through the reactive Proxy's `get` trap. Computed properties are defined via `Object.defineProperty` directly on the proxy object — their getters execute without going through the trap, so `effect()` never registers them as dependencies and stops updating after the first run.
-
-For side effects that depend on computed values, use `store.subscribe()` instead. It fires on any state mutation, which is the correct trigger since computed values always derive from raw state.
+Since Ion 1.1, a computed records the keys it reads and notifies whoever read it when one of them changes. Effects that read computeds therefore re-run exactly when the derived value may have changed — the progress bar and the tab title below don't re-run when only the filter changes.
 
 ```js
-// ✗ effect() doesn't track computed properties — runs once and stops
 App.effect(() => {
   el.style.width = todosStore.state.progress + '%'
-})
-
-// ✓ subscribe() fires on every mutation — correct for computed-derived effects
-todosStore.subscribe(() => {
-  el.style.width = todosStore.state.progress + '%'
-})
+}, { label: 'progress-bar' })
 ```
+
+`store.subscribe()` remains the store-wide option: it fires once per flush after any change to the store, which is what the list renderer wants.
 
 ### `App.batch()` for cross-store mutations
 
-Adding a task mutates two stores: `todosStore.state.items` gets the new task, and `draftStore.state.text` is reset to empty. Without `batch()`, each mutation triggers a separate notification cycle — the list would re-render twice. `batch()` defers all notifications until the function exits, producing a single flush.
+Adding a task mutates two stores: `todosStore.state.items` gets the new task, and `draftStore.state.text` is reset to empty. Ion already runs each reaction once per flush; `batch()` additionally runs them synchronously when the function exits, so both stores and the DOM are consistent on the very next line.
 
 ```js
 App.batch(() => {

@@ -1,5 +1,34 @@
 import { App } from "@matheusmntt/ion";
 
+/** localStorage key the persistence effect writes to (see effects/index.js). */
+export const STORAGE_KEY = "ion-demo";
+
+const PRIORITIES = ["high", "medium", "low"];
+
+function isTodo(value) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof value.id === "number" &&
+    typeof value.text === "string" &&
+    typeof value.done === "boolean" &&
+    PRIORITIES.includes(value.priority)
+  );
+}
+
+/**
+ * Restores the tasks saved by the persistence effect.
+ * Anything unreadable or malformed is ignored rather than trusted.
+ */
+function loadItems() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]");
+    return Array.isArray(saved) ? saved.filter(isTodo) : [];
+  } catch {
+    return [];
+  }
+}
+
 /**
  * todos store — domain state.
  *
@@ -12,7 +41,7 @@ import { App } from "@matheusmntt/ion";
 export const todosStore = App.store(
   "todos",
   {
-    items: [],
+    items: loadItems(),
     filter: "all",
   },
   {

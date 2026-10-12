@@ -1,5 +1,5 @@
 import { App } from "@matheusmntt/ion";
-import { todosStore } from "../stores/todos.js";
+import { STORAGE_KEY, todosStore } from "../stores/todos.js";
 
 /**
  * Registers all application-level reactive effects.
@@ -14,35 +14,43 @@ export function registerEffects() {
    * Persist to localStorage.
    *
    * Reads todosStore.state.items → registers it as a dependency.
-   * Runs again every time items changes.
+   * Runs again every time items changes. The store reads the saved
+   * tasks back on startup (stores/todos.js).
    */
-  App.effect(() => {
-    localStorage.setItem("ion-demo", JSON.stringify(todosStore.state.items));
-  });
+  App.effect(
+    () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(todosStore.state.items));
+    },
+    { label: "persist" },
+  );
 
   /**
    * Sync progress bar visual width.
    *
-   * Uses store.subscribe() instead of App.effect() because `progress` is a
-   * computed property defined via Object.defineProperty on the proxy — its
-   * getter bypasses the Proxy get trap, so activeEffect is never registered
-   * as a dependency. subscribe() fires on any store mutation, which is the
-   * correct trigger here since progress always derives from items.
+   * Reads the `progress` computed. Computeds track their own dependencies
+   * (items), so this effect re-runs whenever the completion changes and
+   * not when only the filter does.
    */
-  todosStore.subscribe(() => {
-    const el = document.getElementById("progress-fill");
-    if (el) el.style.width = todosStore.state.progress + "%";
-  });
+  App.effect(
+    () => {
+      const el = document.getElementById("progress-fill");
+      if (el) el.style.width = todosStore.state.progress + "%";
+    },
+    { label: "progress-bar" },
+  );
 
   /**
    * Update browser tab title.
    *
    * Reads `pendingCount` → re-runs when pending tasks change.
    */
-  App.effect(() => {
-    const n = todosStore.state.pendingCount;
-    document.title = n > 0 ? `(${n}) Ion — Todo` : "Ion — Todo";
-  });
+  App.effect(
+    () => {
+      const n = todosStore.state.pendingCount;
+      document.title = n > 0 ? `(${n}) Ion — Todo` : "Ion — Todo";
+    },
+    { label: "tab-title" },
+  );
 
   /**
    * Live clock.
@@ -50,8 +58,8 @@ export function registerEffects() {
    * This effect has NO reactive dependencies — it reads no store state.
    * It runs once on mount and uses setInterval for updates.
    *
-   * The returned function is the cleanup: Ion calls it when the effect
-   * is stopped (e.g. on page unload). This pattern prevents interval leaks.
+   * The returned function is the cleanup: Ion calls it before a re-run and
+   * when the effect is stopped. This pattern prevents interval leaks.
    */
   App.effect(() => {
     function tick() {
@@ -74,5 +82,5 @@ export function registerEffects() {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  });
+  }, { label: "clock" });
 }

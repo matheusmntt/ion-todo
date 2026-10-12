@@ -15,7 +15,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@matheusmntt/ion": "1.0.4"
+    "@matheusmntt/ion": "1.1.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",

@@ -77,11 +77,12 @@
 
       <!-- Filter bar: managed by TodoApp component -->
       <div id="filter-bar" class="filter-bar">
-        <button class="pill on" data-filter="all">all</button>
-        <button class="pill" data-filter="pending">pending</button>
-        <button class="pill" data-filter="done">done</button>
-        <button class="pill" data-filter="high">urgent</button>
-        <button id="clear-btn" class="pill ml-auto text-accent" data-show="hasDone">
+        <!-- data-tooltip comes from TooltipPlugin (plugins/tooltip.js) -->
+        <button class="pill on" data-filter="all" data-tooltip="Show every task">all</button>
+        <button class="pill" data-filter="pending" data-tooltip="Show tasks still to do">pending</button>
+        <button class="pill" data-filter="done" data-tooltip="Show completed tasks">done</button>
+        <button class="pill" data-filter="high" data-tooltip="Show urgent tasks">urgent</button>
+        <button id="clear-btn" class="pill ml-auto text-accent" data-show="hasDone" data-tooltip="Remove all completed tasks">
           clear done
         </button>
       </div>
